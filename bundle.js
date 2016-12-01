@@ -94,14 +94,14 @@
 
 	      _axios2.default.get('/api/puppies').then(function (response) {
 	        return response.data;
-	      }).then(function (puppyData) {
-	        _this2.setState({ puppyData: puppyData });
+	      }).then(function (puppies) {
+	        _this2.setState({ puppies: puppies });
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var puppyData = this.state.puppyData;
+	      var puppies = this.state.puppies;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -109,15 +109,15 @@
 	        _react2.default.createElement(
 	          'h3',
 	          null,
-	          'Puppies!!!'
+	          'Puppy Index:'
 	        ),
-	        puppyData && puppyData.map(function (puppy) {
+	        puppies && puppies.map(function (puppy) {
 	          return _react2.default.createElement(
 	            'div',
 	            { key: puppy.name },
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { to: '/puppy/' + puppy.name },
+	              { to: '/puppies/' + puppy.name },
 	              puppy.name
 	            )
 	          );
@@ -144,9 +144,14 @@
 	  _createClass(SinglePuppy, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      this.fetchOnePuppy(this.props.params.puppyName);
+	    }
+	  }, {
+	    key: 'fetchOnePuppy',
+	    value: function fetchOnePuppy(puppyName) {
 	      var _this4 = this;
 
-	      _axios2.default.get('/api/puppies/' + this.props.params.name).then(function (response) {
+	      _axios2.default.get('/api/puppies/' + puppyName).then(function (response) {
 	        return response.data;
 	      }).then(function (puppy) {
 	        _this4.setState({ puppy: puppy });
@@ -161,7 +166,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        ' ',
 	        puppy ? _react2.default.createElement(
 	          'div',
 	          null,
@@ -170,15 +174,26 @@
 	            null,
 	            puppy.name
 	          ),
+	          _react2.default.createElement('img', { src: puppy.image }),
+	          _react2.default.createElement('br', null),
 	          _react2.default.createElement(
-	            'div',
-	            null,
-	            _react2.default.createElement('img', { src: puppy.image })
-	          )
+	            _reactRouter.Link,
+	            { to: '/puppies/' + puppy.name + '/toy' },
+	            'See ',
+	            puppy.name,
+	            '\'s favorite toy:'
+	          ),
+	          this.props.children ? _react2.default.cloneElement(this.props.children, {
+	            toy: puppy.toy
+	          }) : null
 	        ) : _react2.default.createElement(
-	          'h4',
+	          'div',
 	          null,
-	          'Loading...'
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Loading...'
+	          )
 	        )
 	      );
 	    }
@@ -187,11 +202,23 @@
 	  return SinglePuppy;
 	}(_react.Component);
 
+	var Toy = function Toy(props) {
+	  return _react2.default.createElement(
+	    'p',
+	    null,
+	    props.toy
+	  );
+	};
+
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRouter.Router,
 	  { history: _reactRouter.browserHistory },
 	  _react2.default.createElement(_reactRouter.Route, { path: '/', component: AllPuppies }),
-	  _react2.default.createElement(_reactRouter.Route, { path: '/puppy/:name', component: SinglePuppy })
+	  _react2.default.createElement(
+	    _reactRouter.Route,
+	    { path: '/puppies/:puppyName', component: SinglePuppy },
+	    _react2.default.createElement(_reactRouter.Route, { path: 'toy', component: Toy })
+	  )
 	), document.getElementById('app'));
 
 /***/ },

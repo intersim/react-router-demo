@@ -11,19 +11,24 @@ app.use(express.static(__dirname));
 
 const puppies = [{
   name: 'Taylor',
-  image: 'https://designerdoginfo.files.wordpress.com/2013/01/puggle-puppy-4.jpg?w=584'
+  image: 'https://designerdoginfo.files.wordpress.com/2013/01/puggle-puppy-4.jpg?w=584',
+  toy: 'Tennis ball'
 }, {
   name: 'Reggie',
-  image: 'http://images.shape.mdpcdn.com/sites/shape.com/files/styles/slide/public/puppy-2_0.jpg'
+  image: 'http://images.shape.mdpcdn.com/sites/shape.com/files/styles/slide/public/puppy-2_0.jpg',
+  toy: 'Teddy bear'
 }, {
   name: 'Christian',
-  image: 'https://www.askideas.com/media/19/Papillon-Puppy-Looking.jpg'
+  image: 'https://www.askideas.com/media/19/Papillon-Puppy-Looking.jpg',
+  toy: 'Squeaky toy'
 }, {
   name: 'Jessie',
-  image: 'http://www.101dogbreeds.com/wp-content/uploads/2015/10/Chi-Spaniel-Puppy-Pictures.jpg'
+  image: 'http://www.101dogbreeds.com/wp-content/uploads/2015/10/Chi-Spaniel-Puppy-Pictures.jpg',
+  toy: 'stick of driftwood'
 }, {
   name: 'Pandora',
-  image: 'http://4.bp.blogspot.com/-3JeIxWBU7bY/UKjIt8lVpCI/AAAAAAAABx8/YM8piSOwczs/s1600/Schipperke-Puppy.jpg'
+  image: 'http://4.bp.blogspot.com/-3JeIxWBU7bY/UKjIt8lVpCI/AAAAAAAABx8/YM8piSOwczs/s1600/Schipperke-Puppy.jpg',
+  toy: 'frisbee'
 }];
 
 app.get('/api/puppies', function (req, res) {
@@ -36,9 +41,9 @@ app.get('/api/puppies/:name', function (req, res) {
   else res.json(aPuppy);
 });
 
-app.use(function (req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
+app.use(function(req, res){
+  res.sendFile(__dirname + "/index.html");
+})
 
 app.listen(3000, function () {
   console.log('Server listening on port', 3000);

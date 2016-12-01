@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { Router, Route, browserHistory, Link } from 'react-router';
+import {Router, Route, browserHistory, Link} from 'react-router';
 
 class AllPuppies extends Component {
   constructor (props) {
@@ -16,18 +16,18 @@ class AllPuppies extends Component {
   fetchPuppies() {
     axios.get('/api/puppies')
     .then(response => response.data)
-    .then(puppyData => { this.setState({ puppyData })})
+    .then(puppies => { this.setState({ puppies })})
   }
 
   render () {
-    const { puppyData } = this.state; 
+    const { puppies } = this.state; 
     return (
       <div>
-        <h3>Puppies!!!</h3>
-        { puppyData && puppyData.map(puppy => {
+        <h3>Puppy Index:</h3>
+        { puppies && puppies.map(puppy => {
             return (
               <div key={puppy.name}>
-                <Link to={`/puppy/${puppy.name}`}>{puppy.name}</ Link>
+                <Link to={`/puppies/${puppy.name}`}>{puppy.name}</Link>
               </div>
             );
         }) }
@@ -42,35 +42,47 @@ class SinglePuppy extends Component {
     this.state = {};
   }
 
-  componentDidMount(){
-    axios.get(`/api/puppies/${this.props.params.name}`)
+  componentDidMount() {
+    this.fetchOnePuppy(this.props.params.puppyName)
+  }
+
+  fetchOnePuppy(puppyName) {
+    axios.get(`/api/puppies/${puppyName}`)
     .then(response => response.data)
-    .then(puppy => {
-      this.setState({ puppy });
-    })
+    .then(puppy => { this.setState({ puppy }) })
     .catch(err => console.error(err.stack));
   }
 
-  render () {
+  render() {
     const puppy = this.state.puppy;
     return (
-      <div> {
-        puppy ? 
+      <div>
+      { puppy ?
         <div>
-          <h4>{puppy.name}</h4>
-          <div><img src={puppy.image} /></div>
-        </div> : 
-        <h4>Loading...</h4>
+        <h4>{puppy.name}</h4>
+        <img src={puppy.image} /><br />
+        <Link to={`/puppies/${puppy.name}/toy`}>See {puppy.name}'s favorite toy:</Link>
+        { this.props.children ? React.cloneElement(this.props.children, {
+          toy: puppy.toy
+        }) : null }
+        </div>
+        : <div><h4>Loading...</h4></div>
       }
       </div>
     )
   }
 }
 
+const Toy = (props) => {
+  return <p>{props.toy}</p>
+};
+
 ReactDOM.render(
-  <Router history={ browserHistory }>
-    <Route path="/" component={ AllPuppies } />
-    <Route path="/puppy/:name" component={ SinglePuppy } />
-  </Router>,
+  <Router history={browserHistory}>
+    <Route path="/" component={AllPuppies} />
+    <Route path="/puppies/:puppyName" component={SinglePuppy}>
+      <Route path="toy" component={Toy} />
+    </ Route>
+  </ Router>,
   document.getElementById('app')
 );
